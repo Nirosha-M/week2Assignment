@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en" ng-app="shoppingListApp">
+  <head>
+    <title>Shopping List Check Off</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="styles/bootstrap.min.css">
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+    <script type="text/javascript" src="script.js"></script>
+    <style>
+      .emptyMessage {
+        font-weight: bold;
+        color: red;
+        font-size: 1.2em;
+      }
+      ul{
+        list-style: none;
+      }
+      li {
+        margin-bottom: 7px;
+        font-size: 1.2em;
+      }
+      li > button {
+        margin-left: 6px;
+      }
+      button > span {
+        color: green;
+      }
+    </style>
+  </head>
+<body>
+  <div class="container">
+  <h1>Shopping List Check Off</h1>
+
+  <div class="row">
+
+    <!-- To Buy List -->
+    <div class="col-md-6" ng-controller="ToBuyController as buy">
+     <h2>To Buy:</h2>
+     <ul>
+       <li ng-repeat="item in buy.buyingList">{{$index + 1}}. Buy {{item.quantity}} {{item.name}} <button class="btn btn-default" ng-click="buy.removeItem($index);"><span class="glyphicon glyphicon-ok"></span> Bought</button></li>
+      </ul>
+     <div class="emptyMessage" ng-if="buy.value">Everything is bought! </div>
+    </div>
+
+    <!-- Already Bought List -->
+    <div class="col-md-6" ng-controller="AlreadyBoughtController as bought">
+     <h2>Already Bought:</h2>
+     <ul>
+       <li ng-repeat="items in bought.items">{{$index + 1}}. Bought {{items.quantity}} {{items.name}}</li>
+     </ul>
+     <div class="emptyMessage" ng-if="bought.status"></div>
+    </div>
+  </div>
+</div>
+
+<script id="jsbin-javascript">
+(function(){
+	'use strict';
+
+	var buyingList = [{name: "Cookies", quantity: 5},
+						{name: "Comic books", quantity: 5},
+						{name: "olives", quantity: 50},
+						{name: "eggs", quantity: 17},
+						{name: "Cartons of milk", quantity: 12}];
+
+	angular.module("shoppingListApp", [])
+	.controller("ToBuyController", ToBuyController)
+	.controller("AlreadyBoughtController", AlreadyBoughtController)
+	.service("ShoppingListCheckOffService", ShoppingListCheckOffService);
+
+	ToBuyController.$inject = ['ShoppingListCheckOffService'];
+	function ToBuyController(ShoppingListCheckOffService){
+		var buy = this;
+		buy.buyingList = buyingList;
+		buy.value = false;
+		buy.counter = 5;
+		buy.removeItem = function(index){
+			ShoppingListCheckOffService.removeItem(index);
+			buy.counter--;
+			if(buy.counter == 0){
+				buy.value = true;
+			}
+		}
+
+	}
+
+	AlreadyBoughtController.$inject = ['ShoppingListCheckOffService'];
+	function AlreadyBoughtController(ShoppingListCheckOffService){
+		var bought = this;
+		bought.items = ShoppingListCheckOffService.getItems();
+		bought.status = ShoppingListCheckOffService.getStatus();;
+	}
+
+	function ShoppingListCheckOffService(){
+		var service = this;
+		service.status = true;
+		var tobuy = buyingList;
+		var bought = [];
+
+		service.removeItem = function(itemIndex){
+			var a = tobuy.splice(itemIndex, 1);
+			var item = {
+				name: a[0].name,
+				quantity: a[0].quantity
+			}
+			bought.push(item);
+			service.changeStatus();
+		}
+		service.getItems = function(){
+			return bought;
+		}
+		service.changeStatus = function(){
+			service.status = false;
+		}
+		service.getStatus = function(){
+			return service.status;
+		}
+	}
+
+}())
+</script>
+
+<script id="jsbin-source-html" type="text/html"><!doctype html>
+<html lang="en" ng-app="shoppingListApp">
+  <head>
+    <title>Shopping List Check Off</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="styles/bootstrap.min.css">
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"><\/script>
+    <script type="text/javascript" src="script.js"><\/script>
+    <style>
+      .emptyMessage {
+        font-weight: bold;
+        color: red;
+        font-size: 1.2em;
+      }
+      ul{
+        list-style: none;
+      }
+      li {
+        margin-bottom: 7px;
+        font-size: 1.2em;
+      }
+      li > button {
+        margin-left: 6px;
+      }
+      button > span {
+        color: green;
+      }
+    </style>
+  </head>
+<body>
+  <div class="container">
+  <h1>Shopping List Check Off</h1>
+
+  <div class="row">
+
+    <\!-- To Buy List -->
+    <div class="col-md-6" ng-controller="ToBuyController as buy">
+     <h2>To Buy:</h2>
+     <ul>
+       <li ng-repeat="item in buy.buyingList">{{$index + 1}}. Buy {{item.quantity}} {{item.name}} <button class="btn btn-default" ng-click="buy.removeItem($index);"><span class="glyphicon glyphicon-ok"></span> Bought</button></li>
+      </ul>
+     <div class="emptyMessage" ng-if="buy.value">Everything is bought! </div>
+    </div>
+
+    <\!-- Already Bought List -->
+    <div class="col-md-6" ng-controller="AlreadyBoughtController as bought">
+     <h2>Already Bought:</h2>
+     <ul>
+       <li ng-repeat="items in bought.items">{{$index + 1}}. Bought {{items.quantity}} {{items.name}}</li>
+     </ul>
+     <div class="emptyMessage" ng-if="bought.status"></div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
+</script>
+
+
+<script id="jsbin-source-javascript" type="text/javascript">(function(){
+	'use strict';
+
+	var buyingList = [{name: "Cookies", quantity: 5},
+						{name: "Comic books", quantity: 5},
+						{name: "olives", quantity: 50},
+						{name: "eggs", quantity: 17},
+						{name: "Cartons of milk", quantity: 12}];
+
+	angular.module("shoppingListApp", [])
+	.controller("ToBuyController", ToBuyController)
+	.controller("AlreadyBoughtController", AlreadyBoughtController)
+	.service("ShoppingListCheckOffService", ShoppingListCheckOffService);
+
+	ToBuyController.$inject = ['ShoppingListCheckOffService'];
+	function ToBuyController(ShoppingListCheckOffService){
+		var buy = this;
+		buy.buyingList = buyingList;
+		buy.value = false;
+		buy.counter = 5;
+		buy.removeItem = function(index){
+			ShoppingListCheckOffService.removeItem(index);
+			buy.counter--;
+			if(buy.counter == 0){
+				buy.value = true;
+			}
+		}
+
+	}
+
+	AlreadyBoughtController.$inject = ['ShoppingListCheckOffService'];
+	function AlreadyBoughtController(ShoppingListCheckOffService){
+		var bought = this;
+		bought.items = ShoppingListCheckOffService.getItems();
+		bought.status = ShoppingListCheckOffService.getStatus();;
+	}
+
+	function ShoppingListCheckOffService(){
+		var service = this;
+		service.status = true;
+		var tobuy = buyingList;
+		var bought = [];
+
+		service.removeItem = function(itemIndex){
+			var a = tobuy.splice(itemIndex, 1);
+			var item = {
+				name: a[0].name,
+				quantity: a[0].quantity
+			}
+			bought.push(item);
+			service.changeStatus();
+		}
+		service.getItems = function(){
+			return bought;
+		}
+		service.changeStatus = function(){
+			service.status = false;
+		}
+		service.getStatus = function(){
+			return service.status;
+		}
+	}
+
+}())
+</script></body>
+</html>
